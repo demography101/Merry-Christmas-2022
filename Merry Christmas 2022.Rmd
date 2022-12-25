@@ -1,0 +1,67 @@
+---
+title: "Merry Christmas 2022"
+output: html_document
+date: "2022-12-23"
+---
+
+```{r - Merry Christmas!}
+
+install.packages("tidyverse")
+install.packages(dplyr)
+install.packages("here")
+install.packages("gganimate")
+install.packages("animation")
+library("tidyverse")
+library(dplyr)
+library("here")
+library("gganimate")
+library("animation")
+
+# parameters
+n <- 100 # number of flakes
+times <- 100 # number of loops
+xstart <- runif(n, max = 1) 
+ystart <- runif(n, max = 1.1) 
+size <- runif(n, min = 5, max = 20) # random flake size
+xspeed <- seq(-0.02, 0.02, length.out = 100) 
+yspeed <- runif(n, min = 0.005, max = 0.025) # random flake fall speed
+
+# create storage vectors
+xpos <- rep(NA, n * times)
+ypos <- rep(NA, n * times)
+
+# loop through simulations
+for(i in seq(times)){
+if(i == 1){
+xpos[1:n] <- xstart
+ypos[1:n] <- ystart
+} else {
+first_obs <- (n*i - n + 1)
+last_obs <- (n*i)
+xpos[first_obs:last_obs] <- xpos[(first_obs-n):(last_obs-n)] - sample(xspeed, n, TRUE)
+ypos[first_obs:last_obs] <- ypos[(first_obs-n):(last_obs-n)] - yspeed
+xpos <- ifelse(ypos < -0.1, runif(n), xpos) # restart at random x
+ypos <- ifelse(ypos < -0.1, 1.1, ypos) # restart just above top
+}
+}
+
+data_fluid <- cbind.data.frame(x = xpos, y = ypos, s = size, t = rep(1:times, each = n))
+
+x1 <- data.frame(total = c(1:19), y = "value", seq = 1)
+y1 <-
+texts <- 
+
+# create animation
+ggplot(data_fluid, aes(x, y, size = s, frame = t)) +
+geom_point(color = "white", pch = 8) + # select snowflake shape
+scale_size_identity() +
+coord_cartesian(c(0, 1), c(0, 1)) +
+annotate("text", x=0.5, y=0.5, label= "Merry 
+Christmas!", 
+         color = "white", size=20, fontface = "bold.italic", family="Palatino") +
+transition_time(t) +
+theme_void() +
+theme(panel.background = element_rect("firebrick"))
+
+```
+
